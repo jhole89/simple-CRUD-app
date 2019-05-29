@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
-<head>
-</head>
+<head><link rel="stylesheet" type="text/css" href="/app/static/style.css"></head>
 <body>
+<p>
 
 <h1><a href="https://github.com/jhole89/simple-CRUD-app">Simple CRUD</a></h1>
 <h3>A simple CRUD web app example </h3>
@@ -10,7 +10,11 @@
 <p>
 <h4>Usage example:</h4>
 <ul>
-    <li><b>GET:</b> <a href="/contacts/">/contacts</a></li>
+    <li><b>C</b>reate - <i>POST:</i> /contacts/create body/JSON: { "username": "simpo", "email": "chunkylover52@aol.com", "first_name": "homer", "surname": "simpson" } - creates a new contact "simpo"</li>
+    <li><b>R</b>ead - <i>GET:</i> <a href="/contacts/">/contacts</a> - returns a list of all contacts</li>
+    <li><b>R</b>ead - <i>GET:</i> <a href="/contacts/search/simpo">/contacts/simpo</a> - returns details for the user "simpo"</li>
+    <li><b>U</b>pdate - <i>POST:</i> /contacts/update body/JSON: { "username": "simpo", "email": "homer.simpson@gmail.com", "first_name": "Homer", "surname": "Simpson" } - updates the contact "simpo" with new details</li>
+    <li><b>D</b>elete - <i>DELETE:</i> /contacts/delete/simpo - deletes the contact "simpo" </li>
 </ul>
 </p>
 

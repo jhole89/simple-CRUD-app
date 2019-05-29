@@ -1,8 +1,8 @@
 """contacts table
 
-Revision ID: 08ed7b0810a3
+Revision ID: 245e431f235a
 Revises: 
-Create Date: 2019-05-27 17:26:18.670062
+Create Date: 2019-05-27 17:58:08.987330
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '08ed7b0810a3'
+revision = '245e431f235a'
 down_revision = None
 branch_labels = None
 depends_on = None

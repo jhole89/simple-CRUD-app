@@ -1,4 +1,4 @@
-from app import db
+from app import db, ma
 
 
 class Contact(db.Model):
@@ -10,3 +10,8 @@ class Contact(db.Model):
 
     def __repr__(self):
         return '<Contact {}>'.format(self.username)
+
+
+class ContactSchema(ma.ModelSchema):
+    class Meta:
+        model = Contact
