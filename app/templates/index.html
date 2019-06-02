@@ -11,7 +11,8 @@
 <h4>Usage example:</h4>
 <ul>
     <li><b>C</b>reate - <i>POST:</i> /contacts/create body/JSON: { "username": "simpo", "email": "chunkylover52@aol.com", "first_name": "homer", "surname": "simpson" } - creates a new contact "simpo"</li>
-    <li><b>R</b>ead - <i>GET:</i> <a href="/contacts/search/simpo">/contacts/simpo</a> - returns details for the user "simpo", or all users if none provided </li>
+    <li><b>R</b>ead - <i>GET:</i> <a href="/contacts/search">/contacts</a> - returns all users </li>
+    <li><b>R</b>ead - <i>GET:</i> <a href="/contacts/search/simpo">/contacts/simpo</a> - returns details for the user "simpo" </li>
     <li><b>U</b>pdate - <i>POST:</i> /contacts/update body/JSON: { "username": "simpo", "email": "homer.simpson@gmail.com", "first_name": "Homer", "surname": "Simpson" } - updates the contact "simpo" with new details</li>
     <li><b>D</b>elete - <i>DELETE:</i> /contacts/delete/simpo - deletes the contact "simpo" </li>
 </ul>
