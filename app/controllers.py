@@ -1,8 +1,7 @@
-from typing import *
 
 from flask import render_template, request, Response
 
-from app import app, db
+from app import db, app
 from app.models import Contact, ContactSchema
 
 contact_schema = ContactSchema()
@@ -20,7 +19,7 @@ def home():
 
 @app.route('/contacts')
 @app.route('/contacts/', methods=['GET'])
-def get_all_contacts() -> Any:
+def get_all_contacts() -> Response:
     """
     API endpoint for contacts/.
     :return: List of all Contacts serialized to JSON
@@ -30,7 +29,7 @@ def get_all_contacts() -> Any:
 
 
 @app.route('/contacts/search/<string:username>', methods=['GET'])
-def search_contact(username: str) -> Any:
+def search_contact(username: str) -> Response:
     """
     API endpoint for contacts/search/<username>.  Searches by given username.
     :return: Contact serialized to JSON
@@ -39,7 +38,7 @@ def search_contact(username: str) -> Any:
 
 
 @app.route('/contacts/create', methods=['POST'])
-def create_contact() -> Any:
+def create_contact() -> Response:
     """
     API endpoint for contacts/create.  Creates new contact by given username.
     :return: New contact serialized to JSON
@@ -60,7 +59,7 @@ def create_contact() -> Any:
 
 
 @app.route('/contacts/update', methods=['POST'])
-def update_contact() -> Any:
+def update_contact() -> Response:
     """
     API endpoint for contacts/update.  Updates existing contact by given username.
     :return: Contact serialized to JSON
@@ -71,7 +70,7 @@ def update_contact() -> Any:
 
     db.session.commit()
 
-    return contact_schema.jsonify(contact)
+    return contact_schema.jsonify(Contact.query.filter_by(username=body.get('username')).first())
 
 
 @app.route('/contacts/delete/<string:username>', methods=['DELETE'])

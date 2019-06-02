@@ -9,11 +9,21 @@ from flask_sqlalchemy import SQLAlchemy
 from config import Config
 
 app = Flask(__name__)
-app.config.from_object(Config)
-db = SQLAlchemy(app)
-ma = Marshmallow(app)
-migrate = Migrate(app, db)
-app.logger.addHandler(logging.StreamHandler())
-app.logger.setLevel(logging.INFO)
+db = SQLAlchemy()
+ma = Marshmallow()
+migrate = Migrate()
+
+
+def create_app(class_config: Config = Config):
+    app.config.from_object(class_config)
+    app.logger.addHandler(logging.StreamHandler())
+    app.logger.setLevel(logging.INFO)
+
+    db.init_app(app)
+    ma.init_app(app)
+    migrate.init_app(app, db)
+
+    return app
+
 
 from app import controllers, models
