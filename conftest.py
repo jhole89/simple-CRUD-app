@@ -1,7 +1,7 @@
 import pytest
 
 from app import create_app, db
-from app.models import Contact
+from app.models import Contact, Email
 from test.config import TestConfig
 
 
@@ -22,20 +22,26 @@ def test_client():
 def init_database():
     db.create_all()
 
+    simpo_email = Email(email='chunkylover53@aol.com')
     simpo = Contact(
         username='simpo',
-        email='chunkylover53@aol.com',
+        email=[simpo_email],
         first_name='Homer',
         surname='Simpson'
     )
+
+    fry_email = Email(email='fry@planet-express.com')
     fry = Contact(
         username='fry1999',
-        email='fry@planet-express.com',
+        email=[fry_email],
         first_name='Phillip',
         surname='Fry'
     )
     db.session.add(simpo)
+    db.session.add(simpo_email)
+
     db.session.add(fry)
+    db.session.add(fry_email)
 
     db.session.commit()
 

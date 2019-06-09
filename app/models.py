@@ -1,3 +1,5 @@
+from marshmallow import fields
+
 from app import db, ma
 
 
@@ -29,3 +31,5 @@ class Contact(db.Model):
 class ContactSchema(ma.ModelSchema):
     class Meta:
         model = Contact
+
+    email = fields.Nested(EmailSchema, many=True)

@@ -16,22 +16,6 @@ def test_home(test_client):
     assert b"A simple CRUD web app example" in response.data
 
 
-def test_get_all_contacts(test_client, init_database):
-    """
-    GIVEN a Flask application
-    WHEN the '/contacts/' page is requested (GET)
-    THEN check the response contains all contacts
-    """
-    expected_usernames = ('fry1999', 'simpo')
-    all_users = test_client.get('/contacts/')
-    data = _helper_decode(all_users.data)
-    usernames = [data[i].get('username') for i in range(len(expected_usernames))]
-
-    assert all_users.status_code == 200
-    assert len(data) == len(expected_usernames)
-    assert sorted(usernames) == sorted(expected_usernames)
-
-
 def test_search_contact(test_client, init_database):
     """
     GIVEN a Flask application
@@ -43,7 +27,7 @@ def test_search_contact(test_client, init_database):
 
     assert fry.status_code == 200
     assert fry_data.get('username') == 'fry1999'
-    assert fry_data.get('email') == 'fry@planet-express.com'
+    assert fry_data.get('email')[0]['email'] == 'fry@planet-express.com'
     assert fry_data.get('first_name') == 'Phillip'
     assert fry_data.get('surname') == 'Fry'
 
@@ -62,7 +46,7 @@ def test_create_contacts(test_client, init_database):
     """
     morty = dict(
         username='morty',
-        email='morty@rickmanil.org',
+        email=['morty@rickmanil.org'],
         first_name='Morty',
         surname='Smith'
     )
@@ -78,7 +62,7 @@ def test_create_contacts(test_client, init_database):
 
     assert response.status_code == 200
     assert data.get('username') == morty.get('username')
-    assert data.get('email') == morty.get('email')
+    assert data.get('email')[0]['email'] == morty.get('email')[0]
     assert data.get('first_name') == morty.get('first_name')
     assert data.get('surname') == morty.get('surname')
     assert data.get('id') == 3
@@ -92,7 +76,7 @@ def test_update_contact(test_client, init_database):
     """
     simpo = dict(
         username='simpo',
-        email='chunkylover53@aol.com',
+        email=['chunkylover53@aol.com', 'max.power@gmail.com'],
         first_name='Max',
         surname='Power'
     )
@@ -108,7 +92,7 @@ def test_update_contact(test_client, init_database):
 
     assert response.status_code == 200
     assert data.get('username') == simpo.get('username')
-    assert data.get('email') == simpo.get('email')
+    assert sorted([email.get('email') for email in data.get('email')]) == sorted(simpo.get('email'))
     assert data.get('first_name') == simpo.get('first_name')
     assert data.get('surname') == simpo.get('surname')
 

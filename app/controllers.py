@@ -2,7 +2,7 @@
 from flask import render_template, request, Response
 
 from app import db, app
-from app.models import Contact, ContactSchema
+from app.models import Contact, ContactSchema, Email
 
 contact_schema = ContactSchema()
 
@@ -15,17 +15,6 @@ def home():
     :return: rendered index.html page
     """
     return render_template("index.html")
-
-
-@app.route('/contacts')
-@app.route('/contacts/', methods=['GET'])
-def get_all_contacts() -> Response:
-    """
-    API endpoint for contacts/.
-    :return: List of all Contacts serialized to JSON
-    """
-    contacts = Contact.query.all()
-    return contact_schema.jsonify(contacts, many=True)
 
 
 @app.route('/contacts/search/<string:username>', methods=['GET'])
@@ -45,14 +34,25 @@ def create_contact() -> Response:
     """
 
     body = request.get_json()
+    emails = body.get('email')
+    if not isinstance(emails, list):
+        email_list = list(body.get('email'))
+    else:
+        email_list = emails
+
+    email_entities = [Email(email=email) for email in email_list]
 
     contact = Contact(
         username=body.get('username'),
-        email=body.get('email'),
+        email=email_entities,
         first_name=body.get('first_name'),
         surname=body.get('surname')
     )
+
     db.session.add(contact)
+    for email in email_entities:
+        db.session.add(email)
+
     db.session.commit()
 
     return contact_schema.jsonify(contact)
@@ -65,8 +65,27 @@ def update_contact() -> Response:
     :return: Contact serialized to JSON
     """
     body = request.get_json()
-    contact = Contact.query.filter_by(username=body.get('username'))
-    contact.update(body)
+    contact = Contact.query.filter_by(username=body.get('username')).first()
+
+    for email in contact.email:
+        db.session.delete(email)
+
+    db.session.commit()
+
+    emails = body.get('email')
+    if not isinstance(emails, list):
+        email_list = list(body.get('email'))
+    else:
+        email_list = emails
+
+    email_entities = [Email(email=email) for email in email_list]
+    for email in email_entities:
+        db.session.add(email)
+
+    contact.username = body.get('username')
+    contact.first_name = body.get('first_name')
+    contact.surname = body.get('surname')
+    contact.email = email_entities
 
     db.session.commit()
 
