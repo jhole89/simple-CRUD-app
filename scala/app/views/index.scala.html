@@ -1,0 +1,20 @@
+@(contact: Form[ContactData])(implicit request: MessagesRequestHeader)
+
+@import helper._
+
+@request.flash.get("success").map { key =>
+  @request.messages(key)
+}
+
+@main("Welcome to Play") {
+  @form(routes.ContactController.createContact()) {
+    @inputText(contact("userName"))
+    @inputText(contact("firstName"))
+    @inputText(contact("lastName"))
+    @CSRF.formField
+
+    <div class="buttons">
+      <input type="submit" value="Add Contact"/>
+    </div>
+  }
+}

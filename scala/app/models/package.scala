@@ -1,4 +1,3 @@
-package com.jhole89.simpleCrud
 
 package object models {
 

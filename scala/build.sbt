@@ -2,12 +2,12 @@ name := "SimpleCrudApp"
 
 version := "0.1"
 
-scalaVersion := "2.12.8"
+scalaVersion := "2.13.0"
 
 val domain = "jhole89"
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
-addCommandAlias("sanity", ";clean ;compile ;assembly ;test ;coverage ;coverageReport ;scalastyle")
+addCommandAlias("sanity", ";clean ;compile ;test ;coverage ;coverageReport ;scalastyle")
 
 resolvers in Global ++= Seq(
   "sonatype-releases" at "https://oss.sonatype.org/content/repositories/releases/"
@@ -17,13 +17,13 @@ libraryDependencies ++= applicationDependencies ++ testDependencies
 
 val applicationDependencies = Seq(
   guice,
-  "com.typesafe.play" %% "play-slick" % "4.0.0",
-  "com.typesafe.play" %% "play-slick-evolutions" % "4.0.0",
+  "com.typesafe.play" %% "play-slick" % "4.0.2",
+  "com.typesafe.play" %% "play-slick-evolutions" % "4.0.2"
 )
 
 val testDependencies = Seq(
-  "org.pegdown" % "pegdown" % "1.6.0" % "test",
-  "org.scalatest" % "scalatest_2.12" % "3.0.5" % "test",
+  "com.h2database" % "h2" % "1.4.199",
+  specs2 % Test
 )
 
 testOptions in Test ++= Seq(
@@ -31,6 +31,8 @@ testOptions in Test ++= Seq(
   Tests.Argument(TestFrameworks.ScalaTest, "-h", "target/test-reports")
 )
 
-parallelExecution in Test := false
-fork in Test := true
-javaOptions += "-Xmx2G"
+scalacOptions ++= Seq(
+  "-feature",
+  "-deprecation",
+  "-Xfatal-warnings"
+)
