@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://unpkg.com/ionicons@4.5.10-0/dist/css/">
+    <title>SimpleCRUD</title>
+    <style>
+        .hoverbtn:hover {
+            font-weight: bold;
+            opacity: 0.4;
+        }
+        a {
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+<div class="w3-row-padding">
+    <div class="w3-card-2 w3-margin-top">
+        <header class="w3-container w3-center w3-teal">
+            <div class="w3-row">
+                <div class="w3-half">
+                    <h3 class="w3-right">Listing contacts</h3>
+                </div>
+                <div class="w3-half w3-text-right">
+                    <div class="w3-right">
+                        <a href="#" onclick="document.getElementById('create-form').style.display='block'">
+                            <i class="icon ion-ios-plus-outline w3-xxlarge hoverbtn">+</i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <table class="w3-table w3-centered w3-border w3-bordered w3-hoverable">
+            <thead>
+            <tr>
+                <th>Id</th>
+                <th>Username</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Email</th>
+            </tr>
+            </thead>
+            <tbody>
+            {{range $index, $contact := .}}
+                <tr>
+                    <td>{{$contact.Id}}</td>
+                    <td>{{$contact.Username}}</td>
+                    <td>{{$contact.FirstName}}</td>
+                    <td>{{$contact.LastName}}</td>
+                    <td>{{$contact.Email}}</td>
+                    <td>
+                        <button class="w3-btn w3-teal" onclick="updateContact(this);">Modify</button>
+                        <button class="w3-btn w3-red" onclick="deleteContact(this)">Delete</button>
+                    </td>
+                </tr>
+            {{end}}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Create Modals -->
+<div class="w3-container">
+    <div id="create-form" class="w3-modal">
+        <div class="w3-modal-content w3-card-8 w3-animate-zoom" style="max-width: 600px;">
+            <!-- head -->
+            <div class="w3-container w3-teal">
+                <h2>Create new contact</h2>
+                <span class="w3-closebtn w3-hover-red w3-container w3-padding-8 w3-display-topright"
+                      onclick="document.getElementById('create-form').style.display='none'">&times;</span>
+            </div>
+
+            <form class="w3-container" action="/contacts/create" method="post">
+                <label class="w3-label">Username</label>
+                <input class="w3-input" type="text" name="Username">
+                <label class="w3-label">First Name</label>
+                <input class="w3-input" type="text" name="FirstName">
+                <label class="w3-label">Last Name</label>
+                <input class="w3-input" type="text" name="LastName">
+                <label class="w3-label">Email</label>
+                <input class="w3-input" type="text" name="Email">
+                <button class="w3-btn w3-teal w3-margin-top w3-margin-bottom w3-right" type="submit">Create</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<!-- Edit Modals -->
+<div class="w3-container">
+    <div id="edit-form" class="w3-modal">
+        <div class="w3-modal-content w3-card-8 w3-animate-zoom" style="max-width: 600px;">
+            <!-- head -->
+            <div class="w3-container w3-teal">
+                <h2>Edit contact</h2>
+                <span class="w3-closebtn w3-hover-red w3-container w3-padding-8 w3-display-topright"
+                      onclick="document.getElementById('edit-form').style.display='none'">&times;</span>
+            </div>
+
+            <form class="w3-container" action="/contacts/update" method="post">
+                <input type="hidden" name="Id" id="contactIdToUpdate">
+                <label class="w3-label">Username</label>
+                <input class="w3-input" type="text" name="Username">
+                <label class="w3-label">First Name</label>
+                <input class="w3-input" type="text" name="FirstName">
+                <label class="w3-label">Last Name</label>
+                <input class="w3-input" type="text" name="LastName">
+                <label class="w3-label">Email</label>
+                <input class="w3-input" type="text" name="Email">
+                <button class="w3-btn w3-teal w3-margin-top w3-margin-bottom w3-right" type="submit">Save</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<!-- Delete Modals -->
+<div class="w3-container">
+    <div id="delete-form" class="w3-modal">
+        <div class="w3-modal-content w3-card-8 w3-animate-zoom" style="max-width: 600px;">
+            <!-- head -->
+            <div class="w3-container w3-teal">
+                <h2>Are you sure?</h2>
+                <span class="w3-closebtn w3-hover-red w3-container w3-padding-8 w3-display-topright"
+                      onclick="document.getElementById('delete-form').style.display='none'">&times;</span>
+            </div>
+
+            <form class="w3-container" action="/contacts/delete" method="post">
+                <input type="hidden" name="Id" id="contactIdToDelete">
+                <div class="w3-center">
+                    <button class="w3-btn w3-red w3-margin-top w3-margin-bottom" type="submit">Delete</button>
+                    <button type="button" class="w3-btn w3-teal w3-margin-top w3-margin-bottom"
+                            onclick="document.getElementById('delete-form').style.display='none'">Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function updateContact(e) {
+        // display update form
+        document.getElementById('edit-form').style.display = 'block';
+        // get contact id to update
+        document.getElementById('contactIdToUpdate').value = e.parentNode.parentNode.childNodes[1].innerText;
+    }
+    function deleteContact(e) {
+        document.getElementById('delete-form').style.display = 'block';
+        document.getElementById('contactIdToDelete').value = e.parentNode.parentNode.childNodes[1].innerText;
+    }
+</script>
+</body>
+</html>
